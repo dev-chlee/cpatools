@@ -1,0 +1,30 @@
+---
+title: 감사 체크리스트 생성 Skill
+description: 감사 대상 회사의 산업과 규모에 맞는 감사 체크리스트를 자동 생성하는 Claude skill
+---
+
+<div class="meta-card">
+  <dl>
+    <dt>플랫폼</dt>
+    <dd>Claude</dd>
+    <dt>버전</dt>
+    <dd>1.0.0</dd>
+    <dt>필요 조건</dt>
+    <dd>Claude Code, 회사 기본 정보</dd>
+    <dt>설치</dt>
+    <dd><code>Claude Code에서 /install-skill audit-checklist 실행</code></dd>
+  </dl>
+</div>
+
+## 개요
+
+감사 계획 단계에서 산업별·규모별 맞춤 체크리스트를 생성합니다.
+한국채택국제회계기준(K-IFRS)과 감사기준서를 기반으로 합니다.
+
+## 사용 예시
+
+```bash
+/audit-checklist --industry 제조업 --size 중견기업 --period 2025
+```
+
+위 명령 실행 시 해당 조건에 맞는 감사 체크리스트가 생성됩니다.

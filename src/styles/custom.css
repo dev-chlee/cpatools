@@ -1,0 +1,39 @@
+:root {
+  --sl-font: 'Pretendard', system-ui, -apple-system, sans-serif;
+  --sl-font-system-mono: 'JetBrains Mono', ui-monospace, monospace;
+}
+
+/* Download button style */
+.download-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  background: var(--sl-color-accent);
+  color: var(--sl-color-black);
+  font-weight: 600;
+  text-decoration: none;
+  transition: opacity 0.2s;
+}
+.download-btn:hover {
+  opacity: 0.85;
+  text-decoration: none;
+}
+
+/* Tool/Skill meta card */
+.meta-card {
+  padding: 1rem;
+  border-radius: 0.5rem;
+  border: 1px solid var(--sl-color-gray-5);
+  background: var(--sl-color-gray-7);
+  margin-bottom: 1.5rem;
+}
+.meta-card dt {
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: var(--sl-color-gray-2);
+}
+.meta-card dd {
+  margin: 0 0 0.75rem 0;
+}
