@@ -1,0 +1,10 @@
+---
+// Override of Starlight's default ContentFooter
+// Adds Giscus comments after the built-in last-updated/edit-link
+import Default from '@astrojs/starlight/components/ContentFooter.astro';
+import Giscus from './Giscus.astro';
+---
+
+<Default><slot /></Default>
+
+<Giscus />

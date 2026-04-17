@@ -1,0 +1,74 @@
+---
+// Giscus comments component
+// Dynamically matches Starlight's light/dark theme
+---
+
+<section class="giscus-wrap">
+  <h2 class="giscus-title">댓글</h2>
+  <div class="giscus"></div>
+</section>
+
+<script is:inline>
+  function getGiscusTheme() {
+    const theme = document.documentElement.getAttribute('data-theme');
+    return theme === 'dark' ? 'dark' : 'light';
+  }
+
+  function loadGiscus() {
+    const container = document.querySelector('.giscus');
+    if (!container || container.querySelector('iframe')) return;
+
+    const script = document.createElement('script');
+    script.src = 'https://giscus.app/client.js';
+    script.setAttribute('data-repo', 'dev-chlee/cpatools');
+    script.setAttribute('data-repo-id', 'R_kgDOSE0Btw');
+    script.setAttribute('data-category', 'General');
+    script.setAttribute('data-category-id', 'DIC_kwDOSE0Bt84C7BTg');
+    script.setAttribute('data-mapping', 'pathname');
+    script.setAttribute('data-strict', '0');
+    script.setAttribute('data-reactions-enabled', '1');
+    script.setAttribute('data-emit-metadata', '0');
+    script.setAttribute('data-input-position', 'top');
+    script.setAttribute('data-theme', getGiscusTheme());
+    script.setAttribute('data-lang', 'ko');
+    script.setAttribute('data-loading', 'lazy');
+    script.crossOrigin = 'anonymous';
+    script.async = true;
+    container.appendChild(script);
+  }
+
+  function updateGiscusTheme() {
+    const frame = document.querySelector('iframe.giscus-frame');
+    if (!frame) return;
+    frame.contentWindow.postMessage(
+      { giscus: { setConfig: { theme: getGiscusTheme() } } },
+      'https://giscus.app'
+    );
+  }
+
+  // Initial load
+  loadGiscus();
+
+  // React to Starlight theme changes (observes data-theme attribute)
+  const observer = new MutationObserver(updateGiscusTheme);
+  observer.observe(document.documentElement, {
+    attributes: true,
+    attributeFilter: ['data-theme'],
+  });
+
+  // Reload on view transitions (Starlight uses them)
+  document.addEventListener('astro:after-swap', loadGiscus);
+</script>
+
+<style>
+  .giscus-wrap {
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--sl-color-hairline);
+  }
+  .giscus-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+  }
+</style>
