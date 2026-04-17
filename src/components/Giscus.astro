@@ -9,55 +9,74 @@
 </section>
 
 <script is:inline>
-  function getGiscusTheme() {
-    const theme = document.documentElement.getAttribute('data-theme');
-    return theme === 'dark' ? 'dark' : 'light';
-  }
+  (function () {
+    function getGiscusTheme() {
+      const theme = document.documentElement.getAttribute('data-theme');
+      return theme === 'dark' ? 'dark' : 'light';
+    }
 
-  function loadGiscus() {
-    const container = document.querySelector('.giscus');
-    if (!container || container.querySelector('iframe')) return;
+    function postTheme() {
+      const frame = document.querySelector('iframe.giscus-frame');
+      if (!frame || !frame.contentWindow) return false;
+      frame.contentWindow.postMessage(
+        { giscus: { setConfig: { theme: getGiscusTheme() } } },
+        'https://giscus.app'
+      );
+      return true;
+    }
 
-    const script = document.createElement('script');
-    script.src = 'https://giscus.app/client.js';
-    script.setAttribute('data-repo', 'dev-chlee/cpatools');
-    script.setAttribute('data-repo-id', 'R_kgDOSE0Btw');
-    script.setAttribute('data-category', 'General');
-    script.setAttribute('data-category-id', 'DIC_kwDOSE0Bt84C7BTg');
-    script.setAttribute('data-mapping', 'pathname');
-    script.setAttribute('data-strict', '0');
-    script.setAttribute('data-reactions-enabled', '1');
-    script.setAttribute('data-emit-metadata', '0');
-    script.setAttribute('data-input-position', 'top');
-    script.setAttribute('data-theme', getGiscusTheme());
-    script.setAttribute('data-lang', 'ko');
-    script.setAttribute('data-loading', 'lazy');
-    script.crossOrigin = 'anonymous';
-    script.async = true;
-    container.appendChild(script);
-  }
+    function updateGiscusTheme() {
+      if (postTheme()) return;
+      // iframe not ready yet — retry briefly until it's available
+      let tries = 0;
+      const timer = setInterval(() => {
+        if (postTheme() || ++tries > 20) clearInterval(timer);
+      }, 200);
+    }
 
-  function updateGiscusTheme() {
-    const frame = document.querySelector('iframe.giscus-frame');
-    if (!frame) return;
-    frame.contentWindow.postMessage(
-      { giscus: { setConfig: { theme: getGiscusTheme() } } },
-      'https://giscus.app'
-    );
-  }
+    function loadGiscus() {
+      const container = document.querySelector('.giscus');
+      if (!container || container.querySelector('iframe, script')) return;
 
-  // Initial load
-  loadGiscus();
+      const script = document.createElement('script');
+      script.src = 'https://giscus.app/client.js';
+      script.setAttribute('data-repo', 'dev-chlee/cpatools');
+      script.setAttribute('data-repo-id', 'R_kgDOSE0Btw');
+      script.setAttribute('data-category', 'General');
+      script.setAttribute('data-category-id', 'DIC_kwDOSE0Bt84C7BTg');
+      script.setAttribute('data-mapping', 'pathname');
+      script.setAttribute('data-strict', '0');
+      script.setAttribute('data-reactions-enabled', '1');
+      script.setAttribute('data-emit-metadata', '0');
+      script.setAttribute('data-input-position', 'top');
+      script.setAttribute('data-theme', getGiscusTheme());
+      script.setAttribute('data-lang', 'ko');
+      script.setAttribute('data-loading', 'lazy');
+      script.crossOrigin = 'anonymous';
+      script.async = true;
+      container.appendChild(script);
 
-  // React to Starlight theme changes (observes data-theme attribute)
-  const observer = new MutationObserver(updateGiscusTheme);
-  observer.observe(document.documentElement, {
-    attributes: true,
-    attributeFilter: ['data-theme'],
-  });
+      // After iframe loads, re-sync theme in case user toggled during load
+      script.addEventListener('load', () => {
+        setTimeout(updateGiscusTheme, 300);
+      });
+    }
 
-  // Reload on view transitions (Starlight uses them)
-  document.addEventListener('astro:after-swap', loadGiscus);
+    // Always run on each page load/swap — guard against duplicate iframe via container check.
+    loadGiscus();
+
+    // Attach global listeners only once per window lifetime
+    if (!window.__giscusInit) {
+      window.__giscusInit = true;
+
+      new MutationObserver(updateGiscusTheme).observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ['data-theme'],
+      });
+
+      document.addEventListener('astro:after-swap', loadGiscus);
+    }
+  })();
 </script>
 
 <style>
