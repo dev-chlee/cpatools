@@ -1,0 +1,9 @@
+---
+// Override of Starlight's default Footer
+// Adds Giscus comments below the built-in pagination/last-updated/edit-link
+import Default from '@astrojs/starlight/components/Footer.astro';
+import Giscus from './Giscus.astro';
+---
+
+<Default />
+<Giscus />
