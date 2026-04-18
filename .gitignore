@@ -2,5 +2,11 @@ node_modules/
 dist/
 .astro/
 .vercel/
+.claude/
 .env
 .env.*
+
+# Dummy data for local mobile UX testing — never commit
+src/content/docs/**/dummy-*.mdx
+public/downloads/dummy-*
+public/downloads/audit-sampling.xlsm
